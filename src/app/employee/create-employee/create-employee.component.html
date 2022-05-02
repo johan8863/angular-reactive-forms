@@ -1,1 +1,20 @@
-<p>create-employee works!</p>
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <!-- heading -->
+    <div>
+        <h3 class="bg-primary text-white p-2 rounded">Create employee</h3>
+    </div>
+    <!-- fullName -->
+    <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="fullName" formControlName="fullName">
+    </div>
+    <!-- email -->
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" formControlName="email">
+    </div>
+    <!-- buttons -->
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
