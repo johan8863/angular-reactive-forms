@@ -1,4 +1,7 @@
-<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+<form
+  [formGroup]="employeeForm"
+  (ngSubmit)="onSubmit()"
+  autocomplete="off">
     <!-- heading -->
     <div>
         <h3 class="bg-primary text-white p-2 rounded">Create employee</h3>
@@ -7,7 +10,22 @@
     <!-- fullName -->
     <div class="mb-3">
         <label for="fullName" class="form-label">Full Name</label>
-        <input type="text" class="form-control" id="fullName" formControlName="fullName">
+        <input
+          type="text"
+          class="form-control"
+          id="fullName"
+          formControlName="fullName"
+          [ngClass]="{'is-valid': validName(), 'is-invalid': invalidName()}">
+
+          <div *ngIf="invalidName()" class="alert alert-danger">
+              <div *ngIf="nameRequired()">
+                  Name is required
+              </div>
+              
+              <div *ngIf="nameLength()">
+                  Name is must be between 2 and 21 characters
+              </div>
+          </div>
     </div>
 
     <!-- email -->

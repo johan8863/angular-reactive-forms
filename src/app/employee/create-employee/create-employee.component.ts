@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-create-employee',
@@ -8,12 +8,13 @@ import { FormGroup, FormControl, FormBuilder } from "@angular/forms";
 })
 export class CreateEmployeeComponent implements OnInit {
   employeeForm!: FormGroup
+  submitted = false
 
   constructor(private fb: FormBuilder) { }
 
   initForm(): void {
     this.employeeForm = this.fb.group({
-      fullName: [''],
+      fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(21)]],
       email: [''],
       skills: this.fb.group({
         skillName: [''],
@@ -21,7 +22,15 @@ export class CreateEmployeeComponent implements OnInit {
         proficiency: ['beginner']
       })
     })
+
+    // watching value changes on a form control
+    // this.employeeForm.get('fullName')?.valueChanges
+    //   .subscribe(value => {
+    //     console.log(value)
+    //   })
+
     // FormGroup construction
+    // to use this code again, re-import the FormGroup class from "@angular/forms"
     // this.employeeForm = new FormGroup({
     //   fullName: new FormControl(),
     //   email: new FormControl(),
@@ -34,8 +43,31 @@ export class CreateEmployeeComponent implements OnInit {
     // })
   }
 
+  get fullName() { return this.employeeForm.get('fullName') }
+  get email() { return this.employeeForm.get('email') }
+  get skills() { return this.employeeForm.get('skills') }
+
+  validName() {
+    return (this.fullName?.valid)
+    // return (this.fullName?.valid || (this.submitted && this.fullName?.valid))
+  }
+
+  invalidName() {
+    return (this.fullName?.errors && (this.fullName.touched || this.fullName.dirty))
+    // return (this.fullName?.invalid || (this.submitted && this.fullName?.invalid))
+  }
+
+  nameRequired() {
+    return this.fullName?.errors?.['required']
+  }
+
+  nameLength() {
+    return (this.fullName?.errors?.['minlength'] || this.fullName?.errors?.['maxlength'])
+  }
+
   onSubmit(): void {
-    console.log(this.employeeForm.value)
+    this.submitted = true
+    console.log(this.employeeForm.get('skills')?.get('proficiency')?.value)
   }
 
   onDataLoadClick(): void {
