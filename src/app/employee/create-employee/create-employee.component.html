@@ -16,16 +16,15 @@
           id="fullName"
           formControlName="fullName"
           [ngClass]="{'is-valid': validName(), 'is-invalid': invalidName()}">
-
-          <div *ngIf="invalidName()" class="alert alert-danger">
-              <div *ngIf="nameRequired()">
-                  Name is required
-              </div>
-              
-              <div *ngIf="nameLength()">
-                  Name is must be between 2 and 21 characters
-              </div>
-          </div>
+        <div *ngIf="invalidName()">
+            <div *ngIf="nameRequired()">
+                <span class="form-text text-danger">Name is required</span>
+            </div>
+            
+            <div *ngIf="nameLength()">
+                <span class="form-text text-danger">Name is must be between 2 and 21 characters</span>
+            </div>
+        </div>
     </div>
 
     <!-- email -->
@@ -126,7 +125,7 @@
                 touched: {{ employeeForm.touched }} <br />
                 dirty: {{ employeeForm.dirty }} <br />
                 valid: {{ employeeForm.valid }} <br />
-                Form values: {{ employeeForm.value | json }}
+                Form values: {{ employeeForm.value| json }}
             </td>
             <td style="padding: 10px;">
                 touched: {{ employeeForm.get('fullName')?.touched }} <br />

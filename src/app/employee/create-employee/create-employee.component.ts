@@ -10,16 +10,45 @@ export class CreateEmployeeComponent implements OnInit {
   employeeForm!: FormGroup
   submitted = false
 
+  validationMessages: Record<string, any> = {
+    fullName: {
+      required: 'Full name is required',
+      minlength: 'Full name must be grater than 2 characters',
+      maxlength: 'Full name is must be between 2 and 21 characters'
+    },
+    email: {
+      required: 'Email is required',
+    },
+    skillName: {
+      required: 'Skill name is required',
+    },
+    experienceInYears: {
+      required: 'Experience name is required',
+    },
+    proficiency: {
+      required: 'Proficiency name is required',
+    }
+
+  }
+
+  formErrors: Record<string, any> = {
+    fullName: '',
+    email: '',
+    skillName: '',
+    experienceInYears: '',
+    proficiency: ''
+  }
+
   constructor(private fb: FormBuilder) { }
 
   initForm(): void {
     this.employeeForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(21)]],
-      email: [''],
+      email: ['', Validators.required],
       skills: this.fb.group({
-        skillName: [''],
-        experienceInYears: [''],
-        proficiency: ['beginner']
+        skillName: ['', Validators.required],
+        experienceInYears: ['', Validators.required],
+        proficiency: ['', Validators.required]
       })
     })
 
@@ -70,19 +99,48 @@ export class CreateEmployeeComponent implements OnInit {
     console.log(this.employeeForm.get('skills')?.get('proficiency')?.value)
   }
 
+  loadValidationErrors(group: FormGroup): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key)
+      if (abstractControl instanceof FormGroup) {
+        this.loadValidationErrors(abstractControl)
+        // abstractControl?.disable()
+      } else {
+        this.formErrors[key] = ''
+        if (abstractControl && abstractControl.invalid) {
+          const messages = this.validationMessages[key]
+          // console.log(messages);
+          // console.log(abstractControl.errors);
+
+          for (const errorKey in abstractControl.errors) {
+            if (errorKey) {
+              this.formErrors[key] += messages[errorKey] + ' '
+            }
+          }
+        }
+        // abstractControl?.disable()
+        // abstractControl?.markAsDirty()
+        // console.log('Key: ' + key + ' Value: ' + abstractControl?.value);
+      }
+    })
+  }
+
   onDataLoadClick(): void {
+    this.loadValidationErrors(this.employeeForm)
+    console.log(this.formErrors);
+    
     // setValue method is used to update all form controls, 
     // to update just one set of controls use patchValue instead    
     // for the record, patchValue can be used to update the entire form as well
-    this.employeeForm.setValue({
-      fullName: 'Johan Travieso Castro',
-      email: 'jtravieso8863@gmail.com',
-      skills: {
-        skillName: 'Django',
-        experienceInYears: 5,
-        proficiency: 'intermediate'
-      }
-    })
+    // this.employeeForm.setValue({
+    //   fullName: 'Johan Travieso Castro',
+    //   email: 'jtravieso8863@gmail.com',
+    //   skills: {
+    //     skillName: 'Django',
+    //     experienceInYears: 5,
+    //     proficiency: 'intermediate'
+    //   }
+    // })
   }
 
   ngOnInit(): void {
